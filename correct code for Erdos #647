@@ -1,0 +1,10 @@
+for n in [24..50] do
+    maxval := 0;
+    for m in [1..n-1] do
+        t := m + #Divisors(m);
+        if t gt maxval then
+            maxval := t;
+        end if;
+    end for;
+    printf "n = %o, max(m+tau(m)) = %o\n", n, maxval;
+end for;
