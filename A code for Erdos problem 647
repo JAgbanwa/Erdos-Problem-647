@@ -1,0 +1,23 @@
+// Function to test if n satisfies the inequality
+IsValid := function(n)
+    maxval := 0;
+    for m in [1..n-1] do
+        t := m + #Divisors(m);  // tau(m) = number of divisors
+        if t gt maxval then      // use 'gt' for greater-than
+            maxval := t;
+        end if;
+    end for;
+    if maxval le n + 2 then     // use 'le' for less-or-equal
+        return true;
+    else
+        return false;
+    end if;
+end function;
+
+// Search for n > 24 up to some upper bound
+UpperBound := 200;
+for n in [25..UpperBound] do
+    if IsValid(n) then
+        print n;
+    end if;
+end for;
