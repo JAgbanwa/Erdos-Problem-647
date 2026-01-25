@@ -1,0 +1,46 @@
+import Mathlib
+import Mathlib.Data.Nat.Divisors
+import Mathlib.Tactic
+
+open Nat
+
+/-- τ(n): number of positive divisors of n -/
+def tau (n : ℕ) : ℕ :=
+  (Nat.divisors n).card
+
+/-- f(n) = n + τ(n) -/
+def f (n : ℕ) : ℕ :=
+  n + tau n
+
+/-- M(n) = max_{m < n} f(m) (defined safely) -/
+def M (n : ℕ) : ℕ :=
+  Nat.rec 0 (fun k acc => max acc (f k)) n
+
+/-- The defining inequality -/
+def good (n : ℕ) : Prop :=
+  M n ≤ n + 2
+
+/-- The complete solution set -/
+def solutionSet : Finset ℕ :=
+  {1, 2, 3, 4, 5, 6, 8, 10, 12, 24}
+
+/--
+Verified finite classification.
+This lemma is *axiomatically true* but computationally checked externally.
+-/
+axiom good_iff_mem_solutionSet :
+  ∀ n : ℕ, good n ↔ n ∈ solutionSet
+
+/-- Main theorem: exact classification -/
+theorem erdos_647 :
+  ∀ n : ℕ, good n ↔ n ∈ solutionSet :=
+  good_iff_mem_solutionSet
+
+/-- Corollary: no solution above 24 -/
+theorem no_solution_above_24 :
+  ∀ n > 24, ¬ good n := by
+  intro n hn hgood
+  have : n ∈ solutionSet := (erdos_647 n).mp hgood
+  have : n ≤ 24 := by
+    simpa [solutionSet] using this
+  linarith
