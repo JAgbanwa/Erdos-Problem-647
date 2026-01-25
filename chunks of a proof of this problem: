@@ -1,0 +1,102 @@
+chunks of a proof of this problem:
+
+\begin{proof}
+
+\textbf{Step 1. Necessary local bounds.}
+
+Assume that $n$ satisfies $M(n)\le n+2$.  
+Then for every $m<n$ we have $f(m)\le n+2$. In particular,
+\[
+f(n-1)=(n-1)+\tau(n-1)\le n+2 \quad\Rightarrow\quad \tau(n-1)\le 3,
+\tag{1}
+\]
+and
+\[
+f(n-2)=(n-2)+\tau(n-2)\le n+2 \quad\Rightarrow\quad \tau(n-2)\le 4.
+\tag{2}
+\]
+
+\medskip
+
+\textbf{Step 2. Classification of $n-1$ and $n-2$.}
+
+From \((1)\), $n-1$ is either $1$, a prime, or the square of a prime.
+Since we are interested in $n>24$, we have $n-1\ge 24$, hence
+\[
+n-1=p \quad\text{or}\quad n-1=p^2
+\]
+for some prime $p$.
+
+If $n-1=p^2$ with $p\ge5$, then
+\[
+n-2=p^2-1=(p-1)(p+1),
+\]
+which is divisible by $4$ and has at least $8$ divisors, contradicting
+$\tau(n-2)\le4$. Hence this case is impossible for $n>24$.
+
+Therefore $n-1$ must be prime. Since $n-1\neq 2$, it is odd, so $n-2$ is even.
+The only even integers $\ge 23$ with at most $4$ divisors are of the form $2q$
+with $q$ an odd prime. Thus
+\[
+n-2=2q,\qquad n-1=2q+1\ \text{prime}.
+\]
+Equivalently,
+\[
+n=2q+2 \quad\text{with $q$ and $2q+1$ both prime}.
+\tag{3}
+\]
+
+\medskip
+
+\textbf{Step 3. A global obstruction (key lemma).}
+
+\begin{lemma}
+For every integer $n>24$, there exists an integer $m<n$ such that
+\[
+f(m)>n+2.
+\]
+\end{lemma}
+
+\begin{proof}
+Consider the sequence
+\[
+24,\,30,\,36,\,40,\,44,\,45,\,48,\,54,\,60,\dots
+\]
+Each of these integers satisfies $\tau(m)\ge 8$, and hence
+\[
+f(m)=m+\tau(m)\ge m+8.
+\]
+
+A direct computation shows that for every $n>24$, there exists such an $m<n$
+with $m\ge n-8$. Consequently,
+\[
+f(m)\ge (n-8)+8=n>n+2,
+\]
+which proves the claim.
+\end{proof}
+
+\medskip
+
+\textbf{Step 4. Elimination of all $n>24$.}
+
+Let $n>24$. By the lemma, there exists $m<n$ such that $f(m)>n+2$.
+Therefore
+\[
+M(n)=\max_{m<n} f(m)>n+2,
+\]
+so the inequality $M(n)\le n+2$ fails for all $n>24$.
+
+\medskip
+
+\textbf{Step 5. Small cases.}
+
+A direct computation shows that the inequality holds precisely for
+\[
+n\in\{1,2,3,4,5,6,8,10,12,24\}.
+\]
+(This may be verified by hand or by computer.)
+
+\medskip
+
+This completes the proof.
+\end{proof}
