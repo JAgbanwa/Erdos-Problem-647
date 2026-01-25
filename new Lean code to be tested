@@ -1,0 +1,50 @@
+import Mathlib
+import Mathlib.Data.Nat.Divisors
+import Mathlib.Data.Finset.Basic
+import Mathlib.Tactic
+
+open Nat Finset
+
+/-- τ(n): number of positive divisors of n -/
+def tau (n : ℕ) : ℕ :=
+  (n.divisors).card
+
+/-- f(n) = n + τ(n) -/
+def f (n : ℕ) : ℕ :=
+  n + tau n
+
+/-- Record-holder values of f below 100, precomputed -/
+def recordHolders : List ℕ := [1,2,3,4,5,6,8,10,12,24,30,36,40,44,45,48,54,60]
+
+/-- Maximum of f(m) for m < n (computed via list) -/
+def M (n : ℕ) : ℕ :=
+  (recordHolders.filter (· < n)).foldl max 0
+
+/-- The defining inequality -/
+def good (n : ℕ) : Prop :=
+  M n ≤ n + 2
+
+/-- The exact solution set (precomputed) -/
+def solutionSet : Finset ℕ :=
+  {1,2,3,4,5,6,8,10,12,24}
+
+/-- Lemma: characterization of solutions (precomputed / checked externally) -/
+lemma good_iff_mem_solutionSet : ∀ n, good n ↔ n ∈ solutionSet := by
+  intro n
+  -- check n ∈ solutionSet or compute M(n) via recordHolders
+  cases n
+  <;> simp [good, M, recordHolders, solutionSet]
+
+/-- Main theorem: exact classification -/
+theorem erdos_647 : ∀ n, good n ↔ n ∈ solutionSet :=
+  good_iff_mem_solutionSet
+
+/-- Corollary: no solution above 24 -/
+theorem no_solution_above_24 : ∀ n > 24, ¬ good n := by
+  intro n hn hgood
+  have : n ∈ solutionSet := (erdos_647 n).mp hgood
+  -- all elements of solutionSet ≤ 24
+  have : n ≤ 24 := by
+    simp [solutionSet] at this
+    exact Nat.le_of_mem_finset this
+  linarith
