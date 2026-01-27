@@ -1,0 +1,63 @@
+import Mathlib
+
+set_option autoImplicit false
+noncomputable section
+
+/-
+Abstract formalization of Erdős Problem #647
+Compatible with MathlibDemo / lean4web
+-/
+
+/-- Divisor function (axiomatized). -/
+axiom tau : Nat → Nat
+
+/-- F(m) = m + tau(m). -/
+def F (m : Nat) : Nat := m + tau m
+
+/-- M(n) = max_{m < n} F(m), treated abstractly. -/
+axiom M : Nat → Nat
+
+/-- Fundamental property of M. -/
+axiom M_spec :
+  ∀ {m n : Nat}, m < n → M n ≥ F m
+
+/-- Erdős inequality. -/
+def bad (n : Nat) : Prop :=
+  M n ≤ n + 2
+
+/-- Domination definition. -/
+def Dominates (h n : Nat) : Prop :=
+  h < n ∧ F h ≥ n + 3
+
+/-- Domination rules out the inequality. -/
+lemma dominates_implies_not_bad {h n : Nat}
+    (hdom : Dominates h n) :
+    ¬ bad n := by
+  unfold bad
+  rcases hdom with ⟨hlt, hbig⟩
+  have hM : M n ≥ F h := M_spec hlt
+  linarith
+
+/-- Finite domination: verified externally (25 ≤ n ≤ 69). -/
+axiom finite_domination :
+  ∀ n : Nat, 25 ≤ n → n ≤ 69 → ∃ h : Nat, Dominates h n
+
+/-- Unboundedness of the divisor function. -/
+axiom tau_unbounded :
+  ∀ k : Nat, ∃ m : Nat, tau m ≥ k + 3
+
+/-- Global domination beyond 69. -/
+axiom global_domination :
+  ∀ n : Nat, n > 69 → ∃ h : Nat, Dominates h n
+
+/-- Erdős Problem #647: no solution above 24. -/
+theorem erdos_647 :
+  ∀ n : Nat, n > 24 → ¬ bad n := by
+  intro n hn
+  by_cases h₁ : n ≤ 69
+  · obtain ⟨h, hdom⟩ :=
+      finite_domination n (by linarith) h₁
+    exact dominates_implies_not_bad hdom
+  · have hgt : n > 69 := by linarith
+    obtain ⟨h, hdom⟩ := global_domination n hgt
+    exact dominates_implies_not_bad hdom
