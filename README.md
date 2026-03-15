@@ -121,6 +121,45 @@ $n > 24$ satisfies the condition.
 | `analysis.py` | Records, δ-trajectory, and growth analysis |
 | `results.txt` | Output of `search.py --limit 5000000 --verbose` |
 | `analysis_results.txt` | Output of `analysis.py --limit 1000000` |
+| `lean/Erdos647.lean` | Lean 4 formal verification (see below) |
+
+## Lean 4 Formal Proof
+
+The `lean/` subdirectory contains a Lean 4 formalization using Mathlib.
+
+### What is proved (no `sorry`)
+
+| Theorem | Statement |
+|---------|-----------|
+| `tau_24` | τ(24) = 8 |
+| `runningMax_24` | max_{m<24} f(m) = 26 |
+| `delta_24` | δ(24) = 2 |
+| `n24_satisfies` | n = 24 satisfies the condition |
+| `solutions_le_24` | Exact solution set below 25: {0,1,2,3,4,5,6,8,10,12,24} |
+| `f_le_runningMax` | f(m) ≤ runningMax(n) whenever m < n |
+| `no_solution_25_to_500` | No n ∈ [25, 500] satisfies the condition |
+| `delta_ge_three_25_to_500` | δ(n) ≥ 3 for all n ∈ [25, 500] |
+| `not_satisfies_35/48/61` | Explicit witness certificates |
+| `growth_of_delta` | δ(100)=8, δ(1000)=14, δ(10000)=32 |
+| `erdos_647_partial` | No solution in (24, 500] |
+
+### What remains open (`sorry`)
+
+```
+theorem erdos_647_conjecture : ∀ n : ℕ, n > 24 → ¬satisfiesErdos647 n
+```
+
+Computationally verified to 5,000,000 but no mathematical proof is known.
+
+### Build instructions
+
+```bash
+cd lean
+lake update   # fetch Mathlib (uses cached .olean files if available)
+lake build    # type-checks all theorems; ~2 min with cache
+```
+
+Requires: [elan](https://github.com/leanprover/elan) + toolchain `leanprover/lean4:v4.29.0-rc6`.
 
 ## Usage
 
